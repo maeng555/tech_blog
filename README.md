@@ -30,7 +30,7 @@ FLUSH PRIVILEGES;
 
 2. 프로젝트 클론
 ```bash
-git clone https://github.com/company-name/tech-blog.git
+git clone https://github.com/PrimeCareer/tech-blog.git
 cd tech-blog
 ```
 
