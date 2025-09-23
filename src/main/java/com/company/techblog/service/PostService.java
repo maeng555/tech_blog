@@ -23,8 +23,11 @@ public class PostService {
     @Transactional
     public PostDto.Response createPost(PostDto.Request request) {
         User user = userRepository.findById(request.getUserId())
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            .orElseThrow(() -> new IllegalArgumentException("User not found")); //인자가 잘못됫을때
 
+        if(user.isResigned()) {
+            throw new IllegalStateException("퇴사자는 생성을 할수 없습니다"); //객체 자체가 잘못됫을때
+        }
         Post post = Post.builder()
             .author(user)
             .title(request.getTitle())
@@ -37,7 +40,6 @@ public class PostService {
     public PostDto.Response getPost(Long postId) {
         Post post = postRepository.findById(postId)
             .orElseThrow(() -> new IllegalArgumentException("Post not found"));
-
         return PostDto.Response.from(post);
     }
 
@@ -54,6 +56,9 @@ public class PostService {
 
         if (!post.isAuthor(request.getUserId())) {
             throw new IllegalStateException("Only author can update post");
+        }
+        if(post.isAuthorResigned()) {
+            throw new IllegalStateException("퇴사자는 수정을 할수 없습니다"); //객체 자체가 잘못됫을때
         }
 
         post.update(request.getTitle(), request.getContent());
